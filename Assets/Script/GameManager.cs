@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,6 +17,11 @@ public class GameManager : MonoBehaviour
     #endregion
 
     [SerializeField] private List<Interactable> OggettiInteragibili = new();
+
+    private void Start()
+    {
+        OggettiInteragibili = FindObjectsOfType<Interactable>().ToList();
+    }
 
     #region Trovare il percorso all'interactable più vicino
     public Interactable GetFreeInteractable(NavMeshAgent dipendente, InteractableType typeNeeded)
