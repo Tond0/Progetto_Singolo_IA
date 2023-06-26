@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public class MuovitiVersoAreaItem : Nodo
+public class MuovitiVersoInteractable : Nodo
 {
     private readonly Dipendente dipendente;
-    public MuovitiVersoAreaItem(Dipendente dipendente)
+    public MuovitiVersoInteractable(Dipendente dipendente)
     {
         this.dipendente = dipendente;
     }
@@ -20,28 +20,20 @@ public class MuovitiVersoAreaItem : Nodo
     {
         if (targetInteractable == null)
         {
-            switch (dipendente.itemRichiesto)
-            {
-                case TipoItem.PopCorn:
-                    targetInteractable = GameManager.current.GetFreeInteractable(dipendente.agent, InteractableType.AreaPopCorn);
-                    break;
-
-                case TipoItem.Bibita:
-                    targetInteractable = GameManager.current.GetFreeInteractable(dipendente.agent, InteractableType.Spina);
-                    break;
-            }
+            targetInteractable = GameManager.current.GetFreeInteractable(dipendente.agent, dipendente.nextInteractable);
 
             if (targetInteractable != null)
             {
                 dipendente.agent.SetDestination(targetInteractable.transform.position);
 
-                dipendente.targetInteractable = targetInteractable;
+                targetInteractable.dipendenteOnInteractable = dipendente;
             }
             
             Debug.Log("MuovitiVersoItem: " + targetInteractable);
         }
 
-        if(arrivato)
+        //Se l'interactable con cui sta interagendo è uguale a quello che si vuole raggiungere allora è arrivato a destinazione!
+        if(dipendente.targetInteractable == this.targetInteractable)
             return Status.Success;
         else
             return Status.Running;

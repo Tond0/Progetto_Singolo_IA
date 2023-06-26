@@ -24,8 +24,7 @@ public class GameManager : MonoBehaviour
 
         foreach(Interactable i in OggettiInteragibili)
         {
-            if(!i.occupied && i.type == typeNeeded) interactablesLiberi.Add(i);
-            Debug.Log("Loading... " + (i.type == typeNeeded));
+            if(!i.dipendenteOnInteractable && i.type == typeNeeded) interactablesLiberi.Add(i);
         }
 
         if(interactablesLiberi.Count <= 0) return null;
@@ -45,8 +44,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        nearestInteractable.occupied = true;
-
         return nearestInteractable;
     }
 
@@ -62,4 +59,5 @@ public class GameManager : MonoBehaviour
         return cost;
     }
     #endregion
+
 }
