@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,11 +17,36 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+
+    #region Game balancing
+    
+    [Header("Game balancing")]
+    [Header("Cliente")]
+    public int grandezzaOrdineMinima;
+    public int grandezzaOrdineMassima;
+    [Header("Shift Cycle")]
+    [SerializeField] private float durataTurno;
+    [SerializeField] private float durataPausa;
+
+    [Header("Debug stuff, da non toccare")]
+    [SerializeField] private bool shiftOff;
     [SerializeField] private List<Interactable> OggettiInteragibili = new();
+
+    private void OnValidate()
+    {
+        shiftStatus = !shiftOff;
+    }
+
+    public bool shiftStatus { get; private set; }
+     
+    #endregion
 
     private void Start()
     {
         OggettiInteragibili = FindObjectsOfType<Interactable>().ToList();
+
+        //Shift cycle setUp
+        //StartCoroutine(ShiftCycle());
     }
 
     #region Trovare il percorso all'interactable più vicino
@@ -66,4 +92,17 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    #region Shift cycles
+    IEnumerator ShiftCycle()
+    {
+        shiftStatus = true;
+        while (true)
+        {
+            yield return new WaitForSeconds(durataTurno);
+            shiftStatus = false;   
+            yield return new WaitForSeconds(durataPausa);
+            shiftStatus = true;   
+        }
+    }
+    #endregion
 }

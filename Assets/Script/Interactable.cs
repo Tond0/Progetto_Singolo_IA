@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public enum InteractableType { TecaPopCorn, Spina, Cassa, Cliente }
+public enum InteractableType { TecaPopCorn, Spina, Cliente, StazioneDiRiposo }
 public class Interactable : MonoBehaviour
 {
     [Header("Interactable stuff")]
@@ -13,15 +14,27 @@ public class Interactable : MonoBehaviour
     public Dipendente dipendenteOnInteractable;
 
     Coroutine waitCoroutine;
-    public void Interact() 
+    public void Interact(int azione) 
     {
-        if(waitCoroutine == null) waitCoroutine = StartCoroutine(WaitTime());
+        if (waitCoroutine == null)
+        {
+            switch (azione) 
+            {
+                case 0:
+                    waitCoroutine = StartCoroutine(WaitTime(Azione0));
+                    break;
+                case 1:
+                    waitCoroutine = StartCoroutine(WaitTime(Azione1));
+                    break;
+            }
+        }
     }
 
-    protected virtual void Azione() { }
+    protected virtual void Azione0() { /*L'interazione con l'interactable è finita*/ dipendenteOnInteractable.interazioneFinita = true; }
+    protected virtual void Azione1() { /*L'interazione con l'interactable è finita*/ dipendenteOnInteractable.interazioneFinita = true; }
 
     float timer = 0;
-    IEnumerator WaitTime()
+    IEnumerator WaitTime(Action azione)
     {
         //SetUp slider
         dipendenteOnInteractable.sliderDipendente.maxValue = durataInterazione;
@@ -35,16 +48,7 @@ public class Interactable : MonoBehaviour
             yield return null;
         }
         Debug.Log("Caricamento finito!");
-        Azione();
-    }
 
-    protected virtual void OnCollisionEnter(Collision other) 
-    {
-        if (other.transform.TryGetComponent(out Dipendente dipendente))
-        {
-            if(dipendenteOnInteractable != dipendente) return;
-            //Sta interagendo con questo interagibile!
-            dipendente.targetInteractable = this;
-        }
+        azione.Invoke();
     }
 }

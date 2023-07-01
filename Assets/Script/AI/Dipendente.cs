@@ -6,23 +6,40 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-
+public enum Item { Niente, PopCorn, Bibita }
 public class Dipendente : MonoBehaviour
 {
+
+    #region Tree IA
     //Tree behaviour
     Radice root = new();
 
-    //Dipendente stuff
-    //L'oggetto con cui sta interagendo.
+    //Il tipo di interactable con cui vuole interagire.
+    [NonSerialized] public InteractableType nextInteractable;
+
+    //L'interactable del tipo InteractableType che questo dipendente sta cercando di raggiungere.
     public Interactable targetInteractable;
+
+    //L'oggetto che sta trasportando.
+    public Item carryingItem;
+
+    //E' arrivato alla destinazione che gli era indicata?
+    public bool arrivatoADestinazione { get; set; }
+    //Ha finito di interagire con un'interagibile.
+    public bool interazioneFinita { get; set; }
+
+    //Sta riposando?
+    public bool staRiposando { get; set; }
+    #endregion
+
+    #region NavMesh IA
     //L'agent del dipendete
     public NavMeshAgent agent { get; private set; }
-    //L'interactable con cui sta interagento
-    public InteractableType nextInteractable;
-    //L'interactable controllerà e dirà se il dipendete è arrivato a destinazione (nel suo collider)
-    public bool arrivedToInteractable { get; set; }
+    #endregion
 
+    #region UI
     public Slider sliderDipendente;
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -32,52 +49,40 @@ public class Dipendente : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         #endregion
 
-        nextInteractable = InteractableType.Cliente;
+        #region Creazione Albero        
+        Sequenza sequenza00 = new Sequenza();
+        C_TurnoFinito c_TurnoFinito = new C_TurnoFinito();
+        Selettore selettore001 = new Selettore();
+        C_Riposa c_staRiposando = new C_Riposa(this);
+        Sequenza sequenza0000 = new Sequenza();
+        A_MuovitiVersoInteractable a_muovitiVersoUscita = new A_MuovitiVersoInteractable(this, InteractableType.StazioneDiRiposo);
+        A_Interagisci a_riposa = new A_Interagisci(this, InteractAction.Riposa);
 
-        #region Creazione Albero
-        Sequenza sequenza0 = new();
+        sequenza0000.AddChild(a_muovitiVersoUscita);
+        sequenza0000.AddChild(a_riposa);
 
-        /*Selettore selettore00 = new();
-        Condizione condizione00 = new Condizione("Sta servendo un cliente?", false);
-        PrendiOrdinazione aApprociaCliente = new();
+        selettore001.AddChild(c_staRiposando);
+        selettore001.AddChild(sequenza0000);
 
-        Selettore selettore01 = new();
-        Condizione condizione010 = new Condizione("Il cliente ha ricevuto tutto?", false);
-        Sequenza sequenza011 = new Sequenza();
-        MuovitiVersoInteractable aPreparaItem = new(this);
-        PortaItem aPortaItem = new();
+        sequenza00.AddChild(c_TurnoFinito);
+        sequenza00.AddChild(selettore001);
 
-        sequenza011.AddChild(aPreparaItem);
-        sequenza011.AddChild(aPortaItem);
-
-        selettore01.AddChild(condizione010);
-        selettore01.AddChild(sequenza011);
-
-        selettore00.AddChild(condizione00);
-        selettore00.AddChild(aApprociaCliente);
-
-        sequenza0.AddChild(selettore00);
-        sequenza0.AddChild(selettore01);
-        */
-
-        MuovitiVersoInteractable aMuovitiVersoItem = new(this);
-        PrendiOrdinazione aPrendiOrdinazione = new(this);
-        MuovitiVersoInteractable aMuovitiVersoItem1 = new(this);
-        
-        sequenza0.AddChild(aMuovitiVersoItem);
-        sequenza0.AddChild(aPrendiOrdinazione);
-        sequenza0.AddChild(aMuovitiVersoItem1);
-
-        root.AddChild(sequenza0);
+        root.AddChild(sequenza00);
         #endregion
     }
 
     bool onlyonce = true;
     private void Update()
     {
-        if (onlyonce && root.Process() == Status.Success)
+        root.Process();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        //Se è a contatto con un interagibile e questo interagibile è ciò che voleva raggiungere allora è arrivato a destinazione!
+        if(collision.transform.TryGetComponent(out Interactable interactable) && interactable == targetInteractable)
         {
-            onlyonce= false;
+            arrivatoADestinazione = true;
         }
     }
 }
