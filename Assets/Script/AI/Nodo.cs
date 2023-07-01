@@ -12,7 +12,11 @@ public abstract class Nodo
 
     public List<Nodo> children = new List<Nodo>();
 
+    public List<Nodo> exitConditions = new();
+
     protected int indexChild;
+
+    protected int indexCondition;
 
     public string name;
 
@@ -28,7 +32,20 @@ public abstract class Nodo
         children.Add(n);
     }
 
-    public abstract Status Process();
+    public void AddExitCondition(Nodo exitCondition)
+    {
+        exitConditions.Add(exitCondition);
+    }
+
+    public virtual Status Process() 
+    {
+        foreach (Nodo c in exitConditions) 
+        {
+            if (c.Process() == Status.Failure) return Status.Failure;
+        }
+
+        return Status.Success;
+    }
 
     public void PrintChildren(Nodo nodo)
     {

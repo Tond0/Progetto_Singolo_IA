@@ -34,10 +34,10 @@ public class GameManager : MonoBehaviour
 
     private void OnValidate()
     {
-        shiftStatus = !shiftOff;
+        shiftIsOver = !shiftOff;
     }
 
-    public bool shiftStatus { get; private set; }
+    public bool shiftIsOver { get; private set; }
      
     #endregion
 
@@ -95,13 +95,13 @@ public class GameManager : MonoBehaviour
     #region Shift cycles
     IEnumerator ShiftCycle()
     {
-        shiftStatus = true;
+        shiftIsOver = true;
         while (true)
         {
             yield return new WaitForSeconds(durataTurno);
-            shiftStatus = false;   
+            shiftIsOver = false;   
             yield return new WaitForSeconds(durataPausa);
-            shiftStatus = true;   
+            shiftIsOver = true;   
         }
     }
     #endregion

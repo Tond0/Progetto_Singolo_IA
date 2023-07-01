@@ -11,6 +11,9 @@ public class Selettore : Nodo
 
     public override Status Process()
     {
+        if (base.Process() == Status.Failure) return Status.Failure;
+
+        Debug.LogWarning("Selecting node: " + children[indexChild]);
         switch (children[indexChild].Process())
         {
             case Status.Running:

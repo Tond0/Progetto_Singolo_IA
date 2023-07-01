@@ -13,7 +13,9 @@ public class Sequenza : Nodo
 
     public override Status Process()
     {
-        Debug.Log(name);
+        if(base.Process() == Status.Failure) return Status.Failure;
+
+        Debug.Log("Running sequence on: " + children[indexChild]);
         switch (children[indexChild].Process())
         {
             case Status.Running:
@@ -37,7 +39,6 @@ public class Sequenza : Nodo
                     return Status.Running;
                 }
         }
-        Debug.LogError("Something went wrong");
         return Status.Failure;
     }
 }

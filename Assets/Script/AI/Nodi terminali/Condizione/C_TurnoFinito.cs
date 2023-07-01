@@ -11,10 +11,13 @@ public class C_TurnoFinito : Nodo
 
     public override Status Process()
     {
-        Debug.Log(name);
-        if (GameManager.current.shiftStatus)
+        if (GameManager.current.shiftIsOver)
+        {
             return Status.Failure;
+        }
         else
+        {
             return Status.Success;
+        }
     }
 }

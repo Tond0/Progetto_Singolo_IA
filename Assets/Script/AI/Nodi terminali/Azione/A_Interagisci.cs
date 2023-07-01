@@ -53,6 +53,8 @@ public class A_Interagisci : Nodo
 
     public override Status Process()
     {
+        if (base.Process() == Status.Failure) return Status.Failure;
+
         //Ascolta l'esigenze del cliente.
         dipendente.targetInteractable.Interact(actionToPerform);
 

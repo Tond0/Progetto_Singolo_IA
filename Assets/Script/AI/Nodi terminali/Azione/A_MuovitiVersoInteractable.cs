@@ -18,6 +18,8 @@ public class A_MuovitiVersoInteractable : Nodo
     public bool arrivato;
     public override Status Process()
     {
+        if (base.Process() == Status.Failure) return Status.Failure;
+
         #region Trova il tipo di interactable più vicino e libero.
         if (dipendente.targetInteractable == null)
         {
@@ -29,8 +31,6 @@ public class A_MuovitiVersoInteractable : Nodo
 
                 dipendente.targetInteractable.dipendenteOnInteractable = dipendente;
             }
-            
-            Debug.Log("MuovitiVersoItem: " + dipendente.targetInteractable);
         }
         #endregion
 

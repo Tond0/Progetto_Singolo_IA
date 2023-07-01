@@ -51,21 +51,20 @@ public class Dipendente : MonoBehaviour
 
         #region Creazione Albero        
         Sequenza sequenza00 = new Sequenza();
-        C_TurnoFinito c_TurnoFinito = new C_TurnoFinito();
+        C_TurnoFinito c_TurnoFinito = new C_TurnoFinito("Ha finito il turno?");
         Selettore selettore001 = new Selettore();
         C_Riposa c_staRiposando = new C_Riposa(this);
         Sequenza sequenza0000 = new Sequenza();
         A_MuovitiVersoInteractable a_muovitiVersoUscita = new A_MuovitiVersoInteractable(this, InteractableType.StazioneDiRiposo);
         A_Interagisci a_riposa = new A_Interagisci(this, InteractAction.Riposa);
 
-        sequenza0000.AddChild(a_muovitiVersoUscita);
-        sequenza0000.AddChild(a_riposa);
 
-        selettore001.AddChild(c_staRiposando);
-        selettore001.AddChild(sequenza0000);
+        sequenza00.AddChild(a_muovitiVersoUscita);
+        sequenza00.AddChild(a_riposa);
 
-        sequenza00.AddChild(c_TurnoFinito);
         sequenza00.AddChild(selettore001);
+        sequenza00.AddExitCondition(c_TurnoFinito);
+        sequenza00.AddExitCondition(c_staRiposando);
 
         root.AddChild(sequenza00);
         #endregion
@@ -82,6 +81,7 @@ public class Dipendente : MonoBehaviour
         //Se è a contatto con un interagibile e questo interagibile è ciò che voleva raggiungere allora è arrivato a destinazione!
         if(collision.transform.TryGetComponent(out Interactable interactable) && interactable == targetInteractable)
         {
+            agent.isStopped = true;
             arrivatoADestinazione = true;
         }
     }

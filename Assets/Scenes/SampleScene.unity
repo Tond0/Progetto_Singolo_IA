@@ -360,6 +360,7 @@ MonoBehaviour:
   grandezzaOrdineMassima: 0
   durataTurno: 120
   durataPausa: 60
+  shiftOff: 0
   OggettiInteragibili: []
 --- !u!1 &330515987
 GameObject:
@@ -471,7 +472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e7248c078a904445b5ac97832dcab6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 4
+  type: 3
   durataInterazione: 0
   dipendenteOnInteractable: {fileID: 0}
 --- !u!1 &330585543
@@ -815,12 +816,12 @@ PrefabInstance:
     - target: {fileID: 6422079125056182372, guid: cfb47b54677c195499060a39f6c3cc72,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.3
+      value: 6.47
       objectReference: {fileID: 0}
     - target: {fileID: 6422079125056182372, guid: cfb47b54677c195499060a39f6c3cc72,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0.57
       objectReference: {fileID: 0}
     - target: {fileID: 6422079125056182372, guid: cfb47b54677c195499060a39f6c3cc72,
         type: 3}
