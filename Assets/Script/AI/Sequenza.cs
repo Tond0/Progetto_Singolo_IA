@@ -6,16 +6,16 @@ using UnityEngine;
 
 public class Sequenza : Nodo
 {
-    public Sequenza() : base() 
+    public Sequenza(string name) : base(name) 
     {
-        name = "Sequence";
     }
 
     public override Status Process()
     {
         if(base.Process() == Status.Failure) return Status.Failure;
 
-        Debug.Log("Running sequence on: " + children[indexChild]);
+        Debug.Log("Running " + name +" on: " + children[indexChild]);
+
         switch (children[indexChild].Process())
         {
             case Status.Running:

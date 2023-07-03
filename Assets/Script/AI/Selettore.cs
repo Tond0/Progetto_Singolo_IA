@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Selettore : Nodo
 {
-    public Selettore() : base() 
+    public Selettore(string nome) : base(nome) 
     {
-        name = "Selection";
+        
     }
 
     public override Status Process()
     {
         if (base.Process() == Status.Failure) return Status.Failure;
 
-        Debug.LogWarning("Selecting node: " + children[indexChild]);
         switch (children[indexChild].Process())
         {
             case Status.Running:

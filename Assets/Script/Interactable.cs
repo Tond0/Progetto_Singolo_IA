@@ -5,18 +5,23 @@ using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public enum InteractableType { TecaPopCorn, Spina, Cliente, StazioneDiRiposo }
+public enum InteractableType { TecaPopCorn, Spina, TecaPatatine, Cliente, StazioneDiRiposo, Null }
 public class Interactable : MonoBehaviour
 {
     [Header("Interactable stuff")]
     public InteractableType type;
     public float durataInterazione;
     public Dipendente dipendenteOnInteractable;
+    public bool ignore;
 
     Coroutine waitCoroutine;
+    bool timerIsOver;
     public void Interact(int azione) 
     {
-        if (waitCoroutine == null)
+        //Ho dovuto utilizzare una variabile di appoggio (timeIsOver) perché se invokavo le azioni dalla coroutine poi per farle
+        //girare continuava a passare per la coroutine :( 
+
+        /*if (waitCoroutine == null)
         {
             switch (azione) 
             {
@@ -28,13 +33,74 @@ public class Interactable : MonoBehaviour
                     break;
             }
         }
+        */
+
+        if (waitCoroutine == null && !timerIsOver)
+            waitCoroutine = StartCoroutine(WaitTime());
+
+        if (timerIsOver)
+        {
+            switch (azione)
+            {
+                case 0:
+                    Azione0();
+                    break;
+                case 1:
+                    Azione1();
+                    break;
+            }
+        }
     }
 
-    protected virtual void Azione0() { /*L'interazione con l'interactable è finita*/ dipendenteOnInteractable.interazioneFinita = true; }
-    protected virtual void Azione1() { /*L'interazione con l'interactable è finita*/ dipendenteOnInteractable.interazioneFinita = true; }
+    protected Item givenItem;
+    private void Start()
+    {
+        givenItem = InteractableTypeToItem(type);
+    }
+
+    #region TODO: CONTROLLA CHE LE HAI EFFETTIVAMENTE USATE STE FUNZIONI, E NON SOLO IN QUESTO START....
+    protected Item InteractableTypeToItem(InteractableType interactableType)
+    {
+        switch (interactableType)
+        {
+            case InteractableType.TecaPopCorn:
+                return Item.PopCorn;
+
+            case InteractableType.Spina:
+                return Item.Bibita;
+
+            case InteractableType.TecaPatatine:
+                return Item.Patatine;
+        }
+
+        Debug.LogError("Stai cercando un area che non da un item!");
+        return Item.Niente;
+    }
+
+    protected InteractableType ItemToInteractableType(Item item) 
+    {
+        switch (item)
+        {
+            case Item.Bibita:
+                return InteractableType.Spina;
+
+            case Item.Patatine:
+                return InteractableType.TecaPatatine;
+
+            case Item.PopCorn:
+                return InteractableType.TecaPopCorn;
+        }
+        Debug.LogError("Stai cercando un item che non ha un area!");
+        return InteractableType.Null;
+    }
+
+    #endregion
+
+    protected virtual void Azione0() { timerIsOver = false; dipendenteOnInteractable.interazioneFinita = true; }
+    protected virtual void Azione1() { timerIsOver = false; dipendenteOnInteractable.interazioneFinita = true; }
 
     float timer = 0;
-    IEnumerator WaitTime(Action azione)
+    IEnumerator WaitTime()
     {
         //SetUp slider
         dipendenteOnInteractable.sliderDipendente.maxValue = durataInterazione;
@@ -44,11 +110,11 @@ public class Interactable : MonoBehaviour
         {
             timer += Time.deltaTime;
             dipendenteOnInteractable.sliderDipendente.value = timer;
-            Debug.Log("Loading...");
             yield return null;
         }
-        Debug.Log("Caricamento finito!");
 
-        azione.Invoke();
+        timer = 0;
+        timerIsOver = true;
+        waitCoroutine = null;
     }
 }

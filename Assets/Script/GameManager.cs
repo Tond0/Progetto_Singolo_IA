@@ -50,13 +50,14 @@ public class GameManager : MonoBehaviour
     }
 
     #region Trovare il percorso all'interactable più vicino
-    public Interactable GetFreeInteractable(NavMeshAgent dipendente, InteractableType typeNeeded)
+    public Interactable GetFreeInteractable(InteractableType typeNeeded, Dipendente dipendente)
     {
         List<Interactable> interactablesLiberi = new();
 
         foreach(Interactable i in OggettiInteragibili)
         {
-            if(!i.dipendenteOnInteractable && i.type == typeNeeded) interactablesLiberi.Add(i);
+            if(!i.dipendenteOnInteractable && i.type == typeNeeded && !i.ignore) interactablesLiberi.Add(i);
+            if (i.dipendenteOnInteractable == dipendente && i.type == typeNeeded && !i.ignore) return i;
         }
 
         if(interactablesLiberi.Count <= 0) return null;
@@ -66,7 +67,7 @@ public class GameManager : MonoBehaviour
         Interactable nearestInteractable = null;
         foreach(Interactable i in interactablesLiberi)
         {
-            dipendente.CalculatePath(i.transform.position, path);
+            dipendente.agent.CalculatePath(i.transform.position, path);
             float pathCalcolato = CalculatePathCost(path);
 
             if (pathCalcolato < pathCost)

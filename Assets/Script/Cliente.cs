@@ -5,39 +5,58 @@ using UnityEngine;
 
 public class Cliente : Interactable
 {
-    private List<Item> order = new();
+    public List<Item> order;
 
     private void Start()
     {
-        type = InteractableType.Cliente;    
+        type = InteractableType.Cliente;
+        order = SpawnOrder();
     }
 
-    /*private List<Item> SpawnOrder()
+    #region Spawn dell'ordine
+    private List<Item> SpawnOrder()
     {
-        List<Item> order = new List<Item>();
+        List<Item> randomOrder = new List<Item>();
 
-        int quantita = Random.Range(GameManager.current.grandezzaOrdineMinima, GameManager.current.grandezzaOrdineMinima + 1);
+        int quantita = Random.Range(GameManager.current.grandezzaOrdineMinima, GameManager.current.grandezzaOrdineMassima + 1);
 
         for(int i = 0; i < quantita; i++)
         {
-
+            randomOrder.Add(SpawnItem());
         }
-    }*/
-    
+
+        return randomOrder;
+    }
+
+    private Item SpawnItem()
+    {
+        Item randomItem = (Item)Random.Range(1,4);
+        return randomItem;
+    }
+    #endregion
 
     //Azione0 = Prendere ordinazione
     protected override void Azione0()
     {
-        //Allora significa che deve ancora sapere cosa portare al cliente
-        InteractableType itemRichiesto = (InteractableType)Random.Range(0, 2);
-        dipendenteOnInteractable.nextInteractable = itemRichiesto;
-        
         base.Azione0();
+
+        //Che cliente sta servendo il dipendente?
+        dipendenteOnInteractable.cliente = this;
+        
     }
 
     //Azione1 = Consegna ordine
     protected override void Azione1()
     {
+
+        //TODO: Uscita del cliente!
+
+        dipendenteOnInteractable.cliente = null;
+        ignore = true;
+        dipendenteOnInteractable.carryingItem.Clear();
+        
         base.Azione1();
+        
+        this.enabled = false;
     }
 }

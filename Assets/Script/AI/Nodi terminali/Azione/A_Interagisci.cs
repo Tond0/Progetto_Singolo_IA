@@ -13,15 +13,12 @@ public enum InteractAction
 }
 public class A_Interagisci : Nodo
 {
-    Dipendente dipendente;
-    InteractableType thisInteractable;
+    readonly Dipendente dipendente;
 
-    int actionToPerform;
+    readonly int actionToPerform;
     public A_Interagisci(Dipendente dipendente, InteractAction actionType) 
     {
         this.dipendente = dipendente;
-
-        thisInteractable = dipendente.nextInteractable;
 
         switch (actionType)
         {
@@ -55,6 +52,7 @@ public class A_Interagisci : Nodo
     {
         if (base.Process() == Status.Failure) return Status.Failure;
 
+        Debug.Log(actionToPerform);
         //Ascolta l'esigenze del cliente.
         dipendente.targetInteractable.Interact(actionToPerform);
 
@@ -64,6 +62,7 @@ public class A_Interagisci : Nodo
         else
         {
             dipendente.interazioneFinita = false;
+            
             return Status.Success;
         }
     }

@@ -14,7 +14,7 @@ public abstract class Nodo
 
     public List<Nodo> exitConditions = new();
 
-    protected int indexChild;
+    public int indexChild;
 
     protected int indexCondition;
 

@@ -7,7 +7,13 @@ public class ItemArea : Interactable
     //Azione0 = Prendi item
     protected override void Azione0()
     {
-        InteractableType itemRichiesto = (InteractableType)Random.Range(0, 2);
-        dipendenteOnInteractable.nextInteractable = itemRichiesto;
+        //AGGIUNGI L'ITEM!
+        dipendenteOnInteractable.carryingItem.Add(givenItem);
+
+        base.Azione0();
+
+        if (dipendenteOnInteractable.cliente.order.Count == dipendenteOnInteractable.carryingItem.Count
+                || dipendenteOnInteractable.cliente.order[dipendenteOnInteractable.carryingItem.Count] != givenItem)
+            dipendenteOnInteractable = null;
     }
 }
