@@ -12,10 +12,11 @@ public class ItemArea : Interactable
 
         base.Azione0();
 
-        C_OrdineNonConcluso c_OrdineNonConcluso = new(dipendenteOnInteractable);
+        Item nextItem = dipendenteOnInteractable.NextItemInOrder();
+        InteractableType nextItemType = GameManager.current.ItemToInteractableType(nextItem);
 
         //Se l'item che il dipendente deve prendere dopo non gli può essere fornito da questa area o ha finito l'ordine...
-        if (dipendenteOnInteractable.nextInteractableType != type)
+        if (nextItemType != type)
         {
             dipendenteOnInteractable = null; //Allora rende libera la postazione
             obstacle.enabled = true;

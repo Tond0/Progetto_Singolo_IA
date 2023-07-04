@@ -134,6 +134,24 @@ public class Dipendente : MonoBehaviour
         Debug.LogWarning("Il main selettore sta analizzando il nodo: " + selettore0.indexChild);
     }
 
+    public Item NextItemInOrder()
+    {
+        List<Item> ordineAppoggio = new(cliente.order);
+
+        foreach (Item itemPreparato in carryingItem)
+        {
+            foreach (Item itemOrdinato in ordineAppoggio)
+            {
+                if (itemPreparato == itemOrdinato) { ordineAppoggio.Remove(itemOrdinato); break; }
+            }
+        }
+
+        if (ordineAppoggio.Count <= 0)
+            return Item.Niente;
+        else
+            return ordineAppoggio[0];
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         //Se è a contatto con un interagibile e questo interagibile è ciò che voleva raggiungere allora è arrivato a destinazione!

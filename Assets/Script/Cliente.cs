@@ -10,7 +10,7 @@ public class Cliente : Interactable
     private void Start()
     {
         type = InteractableType.Cliente;
-        //order = SpawnOrder();
+        order = SpawnOrder();
     }
 
     #region Spawn dell'ordine

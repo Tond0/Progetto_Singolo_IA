@@ -13,28 +13,16 @@ public class C_OrdineNonConcluso : Nodo
 
     public override Status Process()
     {
-        List<Item> ordineAppoggio = new(dipendente.cliente.order);
+        Item nextItem = dipendente.NextItemInOrder();
 
-        foreach(Item itemPreparato in dipendente.carryingItem)
-        {
-            foreach(Item itemOrdinato in ordineAppoggio)
-            {
-                if (itemPreparato == itemOrdinato) { ordineAppoggio.Remove(itemOrdinato); break; }
-            }
-        }
+        if (nextItem == Item.Niente) return Status.Failure;
 
-        if (ordineAppoggio.Count > 0)
-        {
-            Debug.LogError(ordineAppoggio[0].ToString());
-            //Facciamo capire al dipendente dove deve andare.
-            dipendente.nextInteractableType = GameManager.current.ItemToInteractableType(ordineAppoggio[0]);
+        Debug.LogError(nextItem.ToString());
 
-            return Status.Success;
-        }
-        else
-        {
-            dipendente.nextInteractableType = InteractableType.Cliente;
-            return Status.Failure;
-        }
+        //Facciamo capire al dipendente dove deve andare.
+        dipendente.nextInteractableType = GameManager.current.ItemToInteractableType(nextItem);
+
+        return Status.Success;
+
     }
 }
