@@ -10,7 +10,7 @@ public class Cliente : Interactable
     private void Start()
     {
         type = InteractableType.Cliente;
-        order = SpawnOrder();
+        //order = SpawnOrder();
     }
 
     #region Spawn dell'ordine
@@ -42,13 +42,11 @@ public class Cliente : Interactable
 
         //Che cliente sta servendo il dipendente?
         dipendenteOnInteractable.cliente = this;
-        
     }
 
     //Azione1 = Consegna ordine
     protected override void Azione1()
     {
-
         //TODO: Uscita del cliente!
 
         dipendenteOnInteractable.cliente = null;

@@ -93,6 +93,51 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+
+    #region Funzioni per traduzione tra enum
+    public Item InteractableTypeToItem(InteractableType interactableType)
+    {
+        switch (interactableType)
+        {
+            case InteractableType.TecaPopCorn:
+                return Item.PopCorn;
+
+            case InteractableType.Spina:
+                return Item.Bibita;
+
+            case InteractableType.TecaPatatine:
+                return Item.Patatine;
+
+            case InteractableType.Scorta: 
+                return Item.Scorta;
+        }
+
+        Debug.LogError("Stai cercando un area che non da un item!");
+        return Item.Niente;
+    }
+
+    public InteractableType ItemToInteractableType(Item item)
+    {
+        switch (item)
+        {
+            case Item.Bibita:
+                return InteractableType.Spina;
+
+            case Item.Patatine:
+                return InteractableType.TecaPatatine;
+
+            case Item.PopCorn:
+                return InteractableType.TecaPopCorn;
+
+            case Item.Scorta:
+                return InteractableType.Scorta;
+        }
+        Debug.LogError("Stai cercando un item che non ha un area!");
+        return InteractableType.Null;
+    }
+
+    #endregion
+
     #region Shift cycles
     IEnumerator ShiftCycle()
     {

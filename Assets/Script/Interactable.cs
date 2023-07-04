@@ -4,15 +4,27 @@ using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
-public enum InteractableType { TecaPopCorn, Spina, TecaPatatine, Cliente, StazioneDiRiposo, Null }
+public enum InteractableType { TecaPopCorn, Spina, TecaPatatine, Cliente, StazioneDiRiposo, Scorta, Null }
 public class Interactable : MonoBehaviour
 {
     [Header("Interactable stuff")]
     public InteractableType type;
     public float durataInterazione;
     public Dipendente dipendenteOnInteractable;
+    public int quantitaItemMassima;
+    protected int quantitaItem;
+    public NavMeshObstacle obstacle;
     public bool ignore;
+
+    protected Item givenItem;
+    private void Start()
+    {
+        givenItem = GameManager.current.InteractableTypeToItem(type);
+
+        quantitaItem = quantitaItemMassima;
+    }
 
     Coroutine waitCoroutine;
     bool timerIsOver;
@@ -52,49 +64,6 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    protected Item givenItem;
-    private void Start()
-    {
-        givenItem = InteractableTypeToItem(type);
-    }
-
-    #region TODO: CONTROLLA CHE LE HAI EFFETTIVAMENTE USATE STE FUNZIONI, E NON SOLO IN QUESTO START....
-    protected Item InteractableTypeToItem(InteractableType interactableType)
-    {
-        switch (interactableType)
-        {
-            case InteractableType.TecaPopCorn:
-                return Item.PopCorn;
-
-            case InteractableType.Spina:
-                return Item.Bibita;
-
-            case InteractableType.TecaPatatine:
-                return Item.Patatine;
-        }
-
-        Debug.LogError("Stai cercando un area che non da un item!");
-        return Item.Niente;
-    }
-
-    protected InteractableType ItemToInteractableType(Item item) 
-    {
-        switch (item)
-        {
-            case Item.Bibita:
-                return InteractableType.Spina;
-
-            case Item.Patatine:
-                return InteractableType.TecaPatatine;
-
-            case Item.PopCorn:
-                return InteractableType.TecaPopCorn;
-        }
-        Debug.LogError("Stai cercando un item che non ha un area!");
-        return InteractableType.Null;
-    }
-
-    #endregion
 
     protected virtual void Azione0() { timerIsOver = false; dipendenteOnInteractable.interazioneFinita = true; }
     protected virtual void Azione1() { timerIsOver = false; dipendenteOnInteractable.interazioneFinita = true; }

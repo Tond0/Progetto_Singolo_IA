@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class C_OrdineNonConcluso : Nodo
@@ -10,35 +11,30 @@ public class C_OrdineNonConcluso : Nodo
         this.dipendente = dipendente;
     }
 
-
     public override Status Process()
     {
-        if (dipendente.carryingItem.Count != dipendente.cliente.order.Count)
+        List<Item> ordineAppoggio = new(dipendente.cliente.order);
+
+        foreach(Item itemPreparato in dipendente.carryingItem)
         {
+            foreach(Item itemOrdinato in ordineAppoggio)
+            {
+                if (itemPreparato == itemOrdinato) { ordineAppoggio.Remove(itemOrdinato); break; }
+            }
+        }
+
+        if (ordineAppoggio.Count > 0)
+        {
+            Debug.LogError(ordineAppoggio[0].ToString());
             //Facciamo capire al dipendente dove deve andare.
-            dipendente.nextInteractableType = ItemToInteractableType(dipendente.cliente.order[dipendente.carryingItem.Count]);
+            dipendente.nextInteractableType = GameManager.current.ItemToInteractableType(ordineAppoggio[0]);
 
             return Status.Success;
         }
         else
-            return Status.Failure;
-    }
-
-    private InteractableType ItemToInteractableType(Item itemRichiesto)
-    {
-        switch (itemRichiesto)
         {
-            case Item.PopCorn:
-                return InteractableType.TecaPopCorn;
-
-            case Item.Bibita:
-                return InteractableType.Spina;
-
-            case Item.Patatine:
-                return InteractableType.TecaPatatine;
+            dipendente.nextInteractableType = InteractableType.Cliente;
+            return Status.Failure;
         }
-
-        Debug.LogError("PROBLEMA");
-        return InteractableType.Cliente;
     }
 }

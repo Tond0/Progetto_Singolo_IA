@@ -12,8 +12,21 @@ public class ItemArea : Interactable
 
         base.Azione0();
 
-        if (dipendenteOnInteractable.cliente.order.Count == dipendenteOnInteractable.carryingItem.Count
-                || dipendenteOnInteractable.cliente.order[dipendenteOnInteractable.carryingItem.Count] != givenItem)
-            dipendenteOnInteractable = null;
+        C_OrdineNonConcluso c_OrdineNonConcluso = new(dipendenteOnInteractable);
+
+        //Se l'item che il dipendente deve prendere dopo non gli può essere fornito da questa area o ha finito l'ordine...
+        if (dipendenteOnInteractable.nextInteractableType != type)
+        {
+            dipendenteOnInteractable = null; //Allora rende libera la postazione
+            obstacle.enabled = true;
+        }
+    }
+
+    //Azione1 = Rifornisci scorta.
+    protected override void Azione1()
+    {
+        //dipendenteOnInteractable.carryingItem.Remove();
+
+        quantitaItem = quantitaItemMassima;
     }
 }

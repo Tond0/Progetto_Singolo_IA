@@ -6,13 +6,16 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public enum Item { Niente, PopCorn, Bibita, Patatine }
+public enum Item { Niente, PopCorn, Bibita, Patatine, Scorta }
 public class Dipendente : MonoBehaviour
 {
 
     #region Tree IA
     //Tree behaviour
     Radice root = new();
+
+    //TODO: Da spostare nello start.
+    Selettore selettore0 = new("Main selettore");
 
     //Il tipo di interactable con cui vuole interagire.
     public InteractableType nextInteractableType;
@@ -44,7 +47,6 @@ public class Dipendente : MonoBehaviour
     public Slider sliderDipendente;
     #endregion
 
-    Selettore selettore0 = new("Main selettore");
     // Start is called before the first frame update
     void Start()
     {
@@ -58,27 +60,6 @@ public class Dipendente : MonoBehaviour
         root.AddChild(selettore0);
 
         #region Prima ramificazione
-        Sequenza sequenza00 = new Sequenza("Sequenza per riposare");
-        C_TurnoFinito c_TurnoFinito = new C_TurnoFinito("Ha finito il turno?");
-        Selettore selettore001 = new Selettore("1");
-        C_Riposa c_staRiposando = new C_Riposa(this);
-        Sequenza sequenza0000 = new Sequenza("b");
-        A_MuovitiVersoInteractable a_muovitiVersoUscita = new A_MuovitiVersoInteractable(this, InteractableType.StazioneDiRiposo);
-        A_Interagisci a_riposa = new A_Interagisci(this, InteractAction.Riposa);
-
-        sequenza0000.AddChild(a_muovitiVersoUscita);
-        sequenza0000.AddChild(a_riposa);
-
-        selettore001.AddChild(c_staRiposando);
-        selettore001.AddChild(sequenza0000);
-
-        sequenza00.AddChild(c_TurnoFinito);
-        sequenza00.AddChild(selettore001);
-
-        selettore0.AddChild(sequenza00);
-        #endregion
-
-        #region Seconda ramificazione
 
         C_ServendoUnCliente c_staServendo = new(this);
 
@@ -108,6 +89,27 @@ public class Dipendente : MonoBehaviour
         sequenza000.AddChild(selettore0000);
 
         selettore0.AddChild(sequenza000);
+        #endregion
+
+        #region Seconda ramificazione
+        Sequenza sequenza00 = new Sequenza("Sequenza per riposare");
+        C_TurnoFinito c_TurnoFinito = new C_TurnoFinito("Ha finito il turno?");
+        Selettore selettore001 = new Selettore("1");
+        C_Riposa c_staRiposando = new C_Riposa(this);
+        Sequenza sequenza0000 = new Sequenza("b");
+        A_MuovitiVersoInteractable a_muovitiVersoUscita = new A_MuovitiVersoInteractable(this, InteractableType.StazioneDiRiposo);
+        A_Interagisci a_riposa = new A_Interagisci(this, InteractAction.Riposa);
+
+        sequenza0000.AddChild(a_muovitiVersoUscita);
+        sequenza0000.AddChild(a_riposa);
+
+        selettore001.AddChild(c_staRiposando);
+        selettore001.AddChild(sequenza0000);
+
+        sequenza00.AddChild(c_TurnoFinito);
+        sequenza00.AddChild(selettore001);
+
+        selettore0.AddChild(sequenza00);
         #endregion
 
         #region Terza ramificazione
