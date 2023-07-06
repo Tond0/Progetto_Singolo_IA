@@ -21,7 +21,10 @@ public class Interactable : MonoBehaviour
     protected Item givenItem;
     private void Start()
     {
-        givenItem = GameManager.current.InteractableTypeToItem(type);
+        if (type == InteractableType.TecaPopCorn || type == InteractableType.Scorta || type == InteractableType.Spina || type == InteractableType.TecaPatatine)
+        {
+            givenItem = GameManager.current.InteractableTypeToItem(type);
+        }
 
         quantitaItem = quantitaItemMassima;
     }
@@ -65,8 +68,19 @@ public class Interactable : MonoBehaviour
     }
 
 
-    protected virtual void Azione0() { timerIsOver = false; dipendenteOnInteractable.interazioneFinita = true; }
-    protected virtual void Azione1() { timerIsOver = false; dipendenteOnInteractable.interazioneFinita = true; }
+    protected virtual Status Azione0() 
+    { 
+        timerIsOver = false;
+        dipendenteOnInteractable.interazioneFinita = true; 
+        return Status.Running; 
+    }
+
+    protected virtual Status Azione1() 
+    { 
+        timerIsOver = false;
+        dipendenteOnInteractable.interazioneFinita = true;
+        return Status.Running;
+    }
 
     float timer = 0;
     IEnumerator WaitTime()

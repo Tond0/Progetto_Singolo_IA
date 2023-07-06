@@ -52,7 +52,6 @@ public class A_Interagisci : Nodo
     {
         if (base.Process() == Status.Failure) return Status.Failure;
 
-        Debug.Log(actionToPerform);
         //Ascolta l'esigenze del cliente.
         dipendente.targetInteractable.Interact(actionToPerform);
 

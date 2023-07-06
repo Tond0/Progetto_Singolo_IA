@@ -13,7 +13,9 @@ public class C_ClientiDisponibili : Nodo
     public override Status Process()
     {
         Interactable cliente = GameManager.current.GetFreeInteractable(InteractableType.Cliente, dipendente);
-        
+
+        dipendente.targetInteractable = cliente;
+
         if(cliente != null)
             return Status.Success;
         else

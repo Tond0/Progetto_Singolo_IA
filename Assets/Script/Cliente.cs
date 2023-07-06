@@ -36,25 +36,32 @@ public class Cliente : Interactable
     #endregion
 
     //Azione0 = Prendere ordinazione
-    protected override void Azione0()
+    protected override Status Azione0()
     {
         base.Azione0();
 
         //Che cliente sta servendo il dipendente?
         dipendenteOnInteractable.cliente = this;
+
+        return Status.Success;
     }
 
     //Azione1 = Consegna ordine
-    protected override void Azione1()
+    protected override Status Azione1()
     {
         //TODO: Uscita del cliente!
 
         dipendenteOnInteractable.cliente = null;
+
         ignore = true;
+
         dipendenteOnInteractable.carryingItem.Clear();
         
         base.Azione1();
-        
+
         this.enabled = false;
+
+        return Status.Success;
+
     }
 }

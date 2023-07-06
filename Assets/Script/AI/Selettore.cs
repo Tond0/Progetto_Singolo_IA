@@ -14,6 +14,9 @@ public class Selettore : Nodo
     {
         if (base.Process() == Status.Failure) return Status.Failure;
 
+        Debug.Log("Running " + name + " on: " + children[indexChild].name);
+        Debug.Log("");
+
         switch (children[indexChild].Process())
         {
             case Status.Running:

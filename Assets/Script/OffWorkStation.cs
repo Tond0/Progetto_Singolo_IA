@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class OffWorkStation : Interactable
 {
-    protected override void Azione0()
+    protected override Status Azione0()
     {
-        dipendenteOnInteractable.staRiposando = true;
-        Debug.Log("Dorme");
-
         base.Azione0();
+
+        dipendenteOnInteractable.staRiposando = true;
+
+        return Status.Success;
     }
 }

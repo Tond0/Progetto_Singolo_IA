@@ -14,7 +14,8 @@ public class Sequenza : Nodo
     {
         if(base.Process() == Status.Failure) return Status.Failure;
 
-        Debug.Log("Running " + name +" on: " + children[indexChild]);
+        Debug.Log("Running " + name + " on: " + children[indexChild]);
+        Debug.Log("");
 
         switch (children[indexChild].Process())
         {
