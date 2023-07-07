@@ -53,16 +53,18 @@ public class A_Interagisci : Nodo
         if (base.Process() == Status.Failure) return Status.Failure;
 
         //Ascolta l'esigenze del cliente.
-        dipendente.targetInteractable.Interact(actionToPerform);
+        Status statoInterazione = dipendente.targetInteractable.Interact(actionToPerform);
 
         //Se il suo target interactable è ancora lo stesso significa che non ha ancora finito di interagire
         if (!dipendente.interazioneFinita)
+        {
             return Status.Running;
+        }
         else
         {
             dipendente.interazioneFinita = false;
-            
-            return Status.Success;
+
+            return statoInterazione;
         }
     }
 }

@@ -14,7 +14,8 @@ public class Interactable : MonoBehaviour
     public float durataInterazione;
     public Dipendente dipendenteOnInteractable;
     public int quantitaItemMassima;
-    protected int quantitaItem;
+    [SerializeField] protected int quantitaItem;
+    [SerializeField] protected int quantitaDrop = 1;
     public NavMeshObstacle obstacle;
     public bool ignore;
 
@@ -31,7 +32,7 @@ public class Interactable : MonoBehaviour
 
     Coroutine waitCoroutine;
     bool timerIsOver;
-    public void Interact(int azione) 
+    public Status Interact(int azione) 
     {
         //Ho dovuto utilizzare una variabile di appoggio (timeIsOver) perché se invokavo le azioni dalla coroutine poi per farle
         //girare continuava a passare per la coroutine :( 
@@ -58,13 +59,13 @@ public class Interactable : MonoBehaviour
             switch (azione)
             {
                 case 0:
-                    Azione0();
-                    break;
+                    return Azione0();
                 case 1:
-                    Azione1();
-                    break;
+                    return Azione1();
             }
         }
+
+        return Status.Running;
     }
 
 
@@ -72,14 +73,14 @@ public class Interactable : MonoBehaviour
     { 
         timerIsOver = false;
         dipendenteOnInteractable.interazioneFinita = true; 
-        return Status.Running; 
+        /*Stato a caso sennò mi urla addosso */return Status.Running; 
     }
 
     protected virtual Status Azione1() 
     { 
         timerIsOver = false;
         dipendenteOnInteractable.interazioneFinita = true;
-        return Status.Running;
+        /*Stato a caso sennò mi urla addosso */ return Status.Running;
     }
 
     float timer = 0;

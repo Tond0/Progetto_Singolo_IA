@@ -32,11 +32,16 @@ public class Dipendente : MonoBehaviour
     //Il cliente di cui si sta occupando.
     public Cliente cliente;
 
+    #region Bool di controllo
+    //Si sta impegnando a rifornire una postazione?
+    public bool staRifornendo { get; set; }
+
     //Ha finito di interagire con un'interagibile.
-    public bool interazioneFinita;
+    public bool interazioneFinita { get; set; }
 
     //Sta riposando?
     public bool staRiposando { get; set; }
+    #endregion
     #endregion
 
     #region NavMesh IA
@@ -126,6 +131,8 @@ public class Dipendente : MonoBehaviour
 
         /**************************************************/
 
+        C_NonStaGiaRifornendo c_nonStaGiaRifornendo = new(this);
+
         A_MuovitiVersoInteractable a_muovitiVersoAreaItem = new(this);
 
         A_Interagisci a_preparaItem = new(this, InteractAction.PreparaItem);
@@ -168,6 +175,7 @@ public class Dipendente : MonoBehaviour
 
         sequenzaPreparazioneItem.AddChild(a_trovaAreaItem);
         sequenzaPreparazioneItem.AddChild(a_muovitiVersoAreaItem);
+        sequenzaPreparazioneItem.AddChild(c_nonStaGiaRifornendo);
         sequenzaPreparazioneItem.AddChild(a_preparaItem);
 
         /**************************************************/

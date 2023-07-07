@@ -15,16 +15,15 @@ public class Sequenza : Nodo
         if(base.Process() == Status.Failure) return Status.Failure;
 
         Debug.Log("Running " + name + " on: " + children[indexChild]);
-        Debug.Log("");
 
         switch (children[indexChild].Process())
         {
             case Status.Running:
                 return Status.Running;
-            
 
             case Status.Failure:
                 indexChild = 0;
+                Debug.LogError("SEQUENZA RESTITUISCE FAILURE: " + name);
                 return Status.Failure;
 
 

@@ -10,7 +10,7 @@ public class Cliente : Interactable
     private void Start()
     {
         type = InteractableType.Cliente;
-        order = SpawnOrder();
+        //order = SpawnOrder();
     }
 
     #region Spawn dell'ordine
@@ -49,15 +49,23 @@ public class Cliente : Interactable
     //Azione1 = Consegna ordine
     protected override Status Azione1()
     {
+        base.Azione1();
+
         //TODO: Uscita del cliente!
 
         dipendenteOnInteractable.cliente = null;
 
         ignore = true;
 
-        dipendenteOnInteractable.carryingItem.Clear();
-        
-        base.Azione1();
+        //Togliamo gli item di cui non abbiamo bisogno
+        for(int i = 0; i < dipendenteOnInteractable.carryingItem.Count; i++)
+        {
+            if (dipendenteOnInteractable.carryingItem[i] != Item.Scorta)
+            {
+                dipendenteOnInteractable.carryingItem.RemoveAt(i);
+                i--;
+            }
+        }
 
         this.enabled = false;
 
