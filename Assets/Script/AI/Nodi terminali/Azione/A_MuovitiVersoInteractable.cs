@@ -27,9 +27,6 @@ public class A_MuovitiVersoInteractable : Nodo
             //Lo impostiamo come destinazione dell'agent.
             dipendente.agent.SetDestination(dipendente.targetInteractable.transform.position);
 
-            //Lo disabilitiamo come ostacolo (sennò non ci arriverà mai l'agent)
-            dipendente.targetInteractable.obstacle.enabled = false;
-
             //Segnamo quest'ultimo interactable come occupato. TODO: E se usassi delle action? Vedi nel polish.
             dipendente.targetInteractable.dipendenteOnInteractable = dipendente;
 

@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class A_TrovaStazioneLibera : Nodo
 {
     readonly Dipendente dipendente;
     readonly InteractableType interactableType;
+    private Status NavMeshUpdateStatus;
     public A_TrovaStazioneLibera(Dipendente dipendente, InteractableType interactableType) : base()
     {
         this.dipendente = dipendente;
@@ -16,12 +19,14 @@ public class A_TrovaStazioneLibera : Nodo
     {
         if (base.Process() == Status.Failure) return Status.Failure;
 
+        List<Interactable> areeLibere = new();
+
         switch (interactableType)
         {
             case InteractableType.Null:
 
                 //Se deve capire da solo dove andare (come quando svolge un ordine(e quindi nella creazione nell tree mettiamo interactableType a NULL))...
-                dipendente.targetInteractable = GameManager.current.GetFreeInteractable(dipendente.nextInteractableType, dipendente);
+                areeLibere = GameManager.current.GetFreeInteractables(dipendente.nextInteractableType, dipendente);
 
                 break;
 
@@ -31,24 +36,50 @@ public class A_TrovaStazioneLibera : Nodo
                 if (dipendente.cliente != null)
                     dipendente.targetInteractable = dipendente.cliente;
                 else
-                    dipendente.targetInteractable = GameManager.current.GetFreeInteractable(interactableType, dipendente);
+                    areeLibere = GameManager.current.GetFreeInteractables(interactableType, dipendente);
 
                 break;
 
             default:
 
                 //Lo facciamo andare dove noi abbiamo deciso precedentemente (interactableType)
-                dipendente.targetInteractable = GameManager.current.GetFreeInteractable(interactableType, dipendente);
+                areeLibere = GameManager.current.GetFreeInteractables(interactableType, dipendente);
 
                 break;
         }
 
-        //Se trova una stazione libera
-        if (dipendente.targetInteractable != null)
+        if (areeLibere.Count > 0)
+        {
+            areeLibere.First().obstacle.enabled = false;
+            dipendente.targetInteractable = areeLibere.First();
             return Status.Success;
 
-        //Se non trova una stazione libera
+            //Cose che ho provato a fare ma non andavano...
+            /*if (areeLibere.Count == 1)
+            {
+                dipendente.targetInteractable = areeLibere[0];
+                return Status.Success;
+            }
+            else
+            {
+                Interactable areaLiberaPiuVicina = GameManager.current.FindNearest(areeLibere, dipendente.agent);
+
+                if (!areaLiberaPiuVicina)
+                {
+                    return Status.Running;
+                }
+                else
+                {
+                    dipendente.targetInteractable = areaLiberaPiuVicina;
+                    return Status.Success;
+                }
+            }
+            */
+        }
         else
+        {
+            //Attende che sia libero!
             return Status.Running;
+        }
     }
 }

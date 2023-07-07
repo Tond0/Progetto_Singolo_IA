@@ -249,8 +249,14 @@ public class Dipendente : MonoBehaviour
 
         #endregion
 
+        #region Seconda ramificazione (Rifornisci se non ci sono clienti)
+        #region Instanziamento albero
+
+        #endregion
+        #endregion
+
         #region Terza ramificazione (Riposo)
-            Sequenza sequenza00 = new Sequenza("Sequenza per riposare");
+        Sequenza sequenza00 = new Sequenza("Sequenza per riposare");
             C_TurnoFinito c_TurnoFinito = new C_TurnoFinito("Ha finito il turno?");
             Selettore selettore001 = new Selettore("1");
             C_Riposa c_staRiposando = new C_Riposa(this);

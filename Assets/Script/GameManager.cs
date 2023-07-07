@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -19,7 +20,9 @@ public class GameManager : MonoBehaviour
 
 
     #region Game balancing
-    
+
+    [Header("Game navigation")]
+    public NavMeshSurface surface;
     [Header("Game balancing")]
     [Header("Cliente")]
     public int grandezzaOrdineMinima;
@@ -31,6 +34,7 @@ public class GameManager : MonoBehaviour
     [Header("Debug stuff, da non toccare")]
     [SerializeField] private bool shiftOff;
     [SerializeField] private List<Interactable> OggettiInteragibili = new();
+    
 
     private void OnValidate()
     {
@@ -49,35 +53,75 @@ public class GameManager : MonoBehaviour
         //StartCoroutine(ShiftCycle());
     }
 
+
     #region Trovare il percorso all'interactable più vicino
-    public Interactable GetFreeInteractable(InteractableType typeNeeded, Dipendente dipendente)
+    public List<Interactable> GetFreeInteractables(InteractableType typeNeeded, Dipendente dipendente)
     {
         List<Interactable> interactablesLiberi = new();
 
-        foreach(Interactable i in OggettiInteragibili)
+        foreach (Interactable i in OggettiInteragibili)
         {
-            if(!i.dipendenteOnInteractable && i.type == typeNeeded && !i.ignore) interactablesLiberi.Add(i);
-            if (i.dipendenteOnInteractable == dipendente && i.type == typeNeeded && !i.ignore) return i;
-        }
-
-        if(interactablesLiberi.Count <= 0) return null;
-        
-        NavMeshPath path = new();
-        float pathCost = Mathf.Infinity;
-        Interactable nearestInteractable = null;
-        foreach(Interactable i in interactablesLiberi)
-        {
-            dipendente.agent.CalculatePath(i.transform.position, path);
-            float pathCalcolato = CalculatePathCost(path);
-
-            if (pathCalcolato < pathCost)
+            if (!i.dipendenteOnInteractable && i.type == typeNeeded && !i.ignore)
             {
-                nearestInteractable = i;
-                pathCost = pathCalcolato;
+                interactablesLiberi.Add(i);
+            }
+
+            if (i.dipendenteOnInteractable == dipendente && i.type == typeNeeded && !i.ignore)
+            {
+                interactablesLiberi.Clear();
+                interactablesLiberi.Add(i);
+                i.obstacle.enabled = false;
+                return interactablesLiberi;
             }
         }
 
-        return nearestInteractable;
+        return interactablesLiberi;
+    }
+
+    private Dictionary<List<Interactable>, AsyncOperation> UpdateNavMeshStatus = new Dictionary<List<Interactable>, AsyncOperation>();
+    /*public Interactable FindNearest(List<Interactable> interactablesLiberi, NavMeshAgent agentDipendente)
+    {
+
+        foreach(Interactable i in interactablesLiberi)
+            i.obstacle.enabled = false;
+
+        Debug.LogError(UpdateNavMeshStatus.ContainsKey(interactablesLiberi));
+
+        if (UpdateNavMeshStatus.ContainsKey(interactablesLiberi))
+        {
+            UpdateNavMeshStatus.TryGetValue(interactablesLiberi, out AsyncOperation operation);
+            if (operation.isDone)
+            {
+                NavMeshPath path = new();
+                float pathCost = Mathf.Infinity;
+                Interactable nearestInteractable = null;
+
+                foreach (Interactable i in interactablesLiberi)
+                {
+                    agentDipendente.CalculatePath(i.transform.position, path);
+                    float pathCalcolato = CalculatePathCost(path);
+
+                    if (pathCalcolato < pathCost)
+                    {
+                        nearestInteractable = i;
+                        pathCost = pathCalcolato;
+                    }
+                }
+
+                return nearestInteractable;
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
+        else
+        {
+            Debug.LogError("QUA");
+            UpdateNavMeshStatus.TryAdd(interactablesLiberi, surface.UpdateNavMesh(surface.navMeshData));
+            return null;   
+        }
     }
 
     private float CalculatePathCost(NavMeshPath path)
@@ -87,10 +131,12 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < path.corners.Length - 1; i++)
         {
             cost += Vector3.Distance(path.corners[i], path.corners[i + 1]);
+            Debug.LogError(cost);
         }
 
         return cost;
     }
+    */
     #endregion
 
 
