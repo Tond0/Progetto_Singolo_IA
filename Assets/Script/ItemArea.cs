@@ -19,13 +19,21 @@ public class ItemArea : Interactable
         for(int i = 0; i < quantitaDrop; i++)
             dipendenteOnInteractable.carryingItem.Add(givenItem);
 
+        if (dipendenteOnInteractable.cliente != null)
+        {
+            Item nextItem = dipendenteOnInteractable.NextItemInOrder();
 
-        Item nextItem = dipendenteOnInteractable.NextItemInOrder();
-        
-        InteractableType nextItemType = GameManager.current.ItemToInteractableType(nextItem);
+            InteractableType nextItemType = GameManager.current.ItemToInteractableType(nextItem);
 
-        //Se l'item che il dipendente deve prendere dopo non gli può essere fornito da questa area o ha finito l'ordine...
-        if (nextItemType != type)
+            //Se l'item che il dipendente deve prendere dopo non gli può essere fornito da questa area o ha finito l'ordine...
+            if (nextItemType != type)
+            {
+                dipendenteOnInteractable = null; //Allora rende libera la postazione
+                obstacle.enabled = true;
+            }
+        }
+
+        if(type == InteractableType.Scorta)
         {
             dipendenteOnInteractable = null; //Allora rende libera la postazione
             obstacle.enabled = true;
@@ -45,9 +53,16 @@ public class ItemArea : Interactable
             if (i == Item.Scorta) { dipendenteOnInteractable.carryingItem.Remove(i); break; }
         }
 
+
         dipendenteOnInteractable.staRifornendo = false;
 
         quantitaItem = quantitaItemMassima;
+
+        if(dipendenteOnInteractable.cliente == null)
+        {
+            dipendenteOnInteractable = null; //Allora rende libera la postazione
+            obstacle.enabled = true;
+        }
 
         return Status.Success;
     }

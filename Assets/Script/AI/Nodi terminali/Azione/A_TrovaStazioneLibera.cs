@@ -50,8 +50,8 @@ public class A_TrovaStazioneLibera : Nodo
 
         if (areeLibere.Count > 0)
         {
-            areeLibere.First().obstacle.enabled = false;
-            dipendente.targetInteractable = areeLibere.First();
+            areeLibere[0].obstacle.enabled = false;
+            dipendente.targetInteractable = areeLibere[0];
             return Status.Success;
 
             //Cose che ho provato a fare ma non andavano...

@@ -14,7 +14,7 @@ public class Interactable : MonoBehaviour
     public float durataInterazione;
     public Dipendente dipendenteOnInteractable;
     public int quantitaItemMassima;
-    [SerializeField] protected int quantitaItem;
+    public int quantitaItem;
     [SerializeField] protected int quantitaDrop = 1;
     public NavMeshObstacle obstacle;
     public bool ignore;
@@ -27,7 +27,7 @@ public class Interactable : MonoBehaviour
             givenItem = GameManager.current.InteractableTypeToItem(type);
         }
 
-        quantitaItem = quantitaItemMassima;
+        //quantitaItem = quantitaItemMassima;
     }
 
     Coroutine waitCoroutine;

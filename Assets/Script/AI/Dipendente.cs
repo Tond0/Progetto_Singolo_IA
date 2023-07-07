@@ -153,7 +153,7 @@ public class Dipendente : MonoBehaviour
 
         A_MuovitiVersoInteractable a_muovitiVersoPostazioneVuota = new(this);
 
-        A_Interagisci a_riempiScorta = new(this, InteractAction.RifornisciPostazione); //Ricordati di mettere la condizione failure.
+        A_Interagisci a_riempiAreaItem = new(this, InteractAction.RifornisciPostazione); //Ricordati di mettere la condizione failure.
         #endregion
 
         #region Collegamento rami
@@ -162,7 +162,7 @@ public class Dipendente : MonoBehaviour
 
         sequenzaRifornimento.AddChild(c_possiedeScorta);
         sequenzaRifornimento.AddChild(a_muovitiVersoPostazioneVuota);
-        sequenzaRifornimento.AddChild(a_riempiScorta);
+        sequenzaRifornimento.AddChild(a_riempiAreaItem);
 
         sequenzaTrovaScorta.AddChild(a_trovaScortaLibera);
         sequenzaTrovaScorta.AddChild(a_muovitiVersoScorta);
@@ -250,13 +250,44 @@ public class Dipendente : MonoBehaviour
         #endregion
 
         #region Seconda ramificazione (Rifornisci se non ci sono clienti)
+
         #region Instanziamento albero
 
+        C_PostazioniDaRiempire c_postazioneDaRiempire = new(this);
+
+        Sequenza sequenzaSecondaRamificazione = new("Sequenza che si chiede se le postazioni sono riempibili");
+
+        Selettore selettorePossessoScorta = new("Selettore che si chiede se è in possesso di una scorta");
+
+        Sequenza sequenzaCherRifornisce = new("Sequenza per il rifornimento di una stazione vuota");
+        
+        Sequenza sequenzaPerPrendereScorta = new("Sequenza per ottenere una scorta");
+
         #endregion
+
+        #region Collegamento rami
+
+        sequenzaPerPrendereScorta.AddChild(a_trovaScortaLibera);
+        sequenzaPerPrendereScorta.AddChild(a_muovitiVersoAreaItem);
+        sequenzaPerPrendereScorta.AddChild(a_prendiScorta);
+
+        sequenzaCherRifornisce.AddChild(c_possiedeScorta);
+        sequenzaCherRifornisce.AddChild(a_trovaAreaItem);
+        sequenzaCherRifornisce.AddChild(a_muovitiVersoAreaItem);
+        sequenzaCherRifornisce.AddChild(a_riempiAreaItem);
+
+        selettorePossessoScorta.AddChild(sequenzaCherRifornisce);
+        selettorePossessoScorta.AddChild(sequenzaPerPrendereScorta);
+
+        sequenzaSecondaRamificazione.AddChild(c_postazioneDaRiempire);
+        sequenzaSecondaRamificazione.AddChild(selettorePossessoScorta);
+
+        #endregion
+
         #endregion
 
         #region Terza ramificazione (Riposo)
-        Sequenza sequenza00 = new Sequenza("Sequenza per riposare");
+        Sequenza sequenzaTerzaRamificazione = new Sequenza("Sequenza per riposare");
             C_TurnoFinito c_TurnoFinito = new C_TurnoFinito("Ha finito il turno?");
             Selettore selettore001 = new Selettore("1");
             C_Riposa c_staRiposando = new C_Riposa(this);
@@ -272,12 +303,13 @@ public class Dipendente : MonoBehaviour
             selettore001.AddChild(c_staRiposando);
             selettore001.AddChild(sequenza0000);
 
-            sequenza00.AddChild(c_TurnoFinito);
-            sequenza00.AddChild(selettore001);
+            sequenzaTerzaRamificazione.AddChild(c_TurnoFinito);
+            sequenzaTerzaRamificazione.AddChild(selettore001);
         #endregion
 
         mainSelector.AddChild(selettorePrimaRamificazione);
-        mainSelector.AddChild(sequenza00);
+        mainSelector.AddChild(sequenzaSecondaRamificazione);
+        mainSelector.AddChild(sequenzaTerzaRamificazione);
         #endregion
 
     }
