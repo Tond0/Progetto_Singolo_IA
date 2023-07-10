@@ -14,7 +14,7 @@ public class C_NonStaGiaRifornendo : Nodo
     {
         if(base.Process() == Status.Failure) return Status.Failure;
 
-        if(dipendente.staRifornendo)
+        if(dipendente.StaRifornendo)
             return Status.Failure;
         else 
             return Status.Success;

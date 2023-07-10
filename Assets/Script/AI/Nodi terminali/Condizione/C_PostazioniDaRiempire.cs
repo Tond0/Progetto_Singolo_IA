@@ -15,31 +15,16 @@ public class C_PostazioniDaRiempire : Nodo
     {
         if(base.Process() == Status.Failure) return Status.Failure;
 
-        int interactableType = 0;
-
-        while (interactableType < 3)
+        AreaItem areaDaRifornire = GameManager.current.GetFreeAreaItemRifornibile(dipendente);
+        if (areaDaRifornire)
         {
-            List<Interactable> areaDaRifornire = GameManager.current.GetFreeInteractables((InteractableType)interactableType, dipendente);
-
-            if (areaDaRifornire.Count > 0)
-            {
-                foreach(Interactable i in areaDaRifornire)
-                {
-                    if(i.quantitaItem < i.quantitaItemMassima)
-                    {
-                        areaDaRifornire[0].dipendenteOnInteractable = dipendente;
-
-                        dipendente.nextInteractableType = areaDaRifornire[0].type;
-
-                        return Status.Success;
-                    }
-                }
-            }
-
-            interactableType++;
+            areaDaRifornire.dipendenteOnInteractable = dipendente;
+            dipendente.nextInteractableType = areaDaRifornire.Type;
+            return Status.Success;
         }
-
-        return Status.Failure;
-
+        else
+        {
+            return Status.Failure;
+        }
     }
 }

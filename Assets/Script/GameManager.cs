@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Android;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,11 +19,7 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-
     #region Game balancing
-
-    [Header("Game navigation")]
-    public NavMeshSurface surface;
     [Header("Game balancing")]
     [Header("Cliente")]
     public int grandezzaOrdineMinima;
@@ -32,24 +29,30 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float durataPausa;
 
     [Header("Debug stuff, da non toccare")]
-    [SerializeField] private bool shiftOff;
-    [SerializeField] private List<Interactable> OggettiInteragibili = new();
+    [SerializeField] private bool shiftOffDebug;
+    #endregion
+
+    [Header("Game navigation")]
+    public NavMeshSurface surface;
+    public List<Interactable> oggettiInteragibili = new();
+    public List<Dipendente> Dipendenti = new();
     
 
     private void OnValidate()
     {
-        shiftIsOver = !shiftOff;
+        ShiftIsOver = !shiftOffDebug;
     }
 
-    public bool shiftIsOver { get; private set; }
-     
-    #endregion
+    public bool ShiftIsOver { get; private set; }
 
     private void Start()
     {
-        OggettiInteragibili = FindObjectsOfType<Interactable>().ToList();
+        foreach(Interactable i in oggettiInteragibili)
+        {
+            if(i.Type != InteractableType.Scorta) i.gameObject.SetActive(false);
+        }
 
-        //Shift cycle setUp
+        //Shift cycle setUp (funzionava ma per creare una scena di test più carina voglio far decidere al tester quando finire il turno)
         //StartCoroutine(ShiftCycle());
     }
 
@@ -59,14 +62,14 @@ public class GameManager : MonoBehaviour
     {
         List<Interactable> interactablesLiberi = new();
 
-        foreach (Interactable i in OggettiInteragibili)
+        foreach (Interactable i in oggettiInteragibili)
         {
-            if (!i.dipendenteOnInteractable && i.type == typeNeeded && !i.ignore)
+            if (!i.dipendenteOnInteractable && i.Type == typeNeeded && i.gameObject.activeSelf)
             {
                 interactablesLiberi.Add(i);
             }
 
-            if (i.dipendenteOnInteractable == dipendente && i.type == typeNeeded && !i.ignore)
+            if (i.dipendenteOnInteractable == dipendente && i.Type == typeNeeded && i.gameObject.activeSelf)
             {
                 interactablesLiberi.Clear();
                 interactablesLiberi.Add(i);
@@ -78,8 +81,20 @@ public class GameManager : MonoBehaviour
         return interactablesLiberi;
     }
 
+    public AreaItem GetFreeAreaItemRifornibile(Dipendente dipendente)
+    {
+        foreach(Interactable i in oggettiInteragibili)
+        {
+            //Se l'interactable è un'area item, che non sta venendo utilizzata, che non è maxxata...
+            if (i.TryGetComponent(out AreaItem areaItem) && (!areaItem.dipendenteOnInteractable || areaItem.dipendenteOnInteractable == dipendente) && areaItem.quantitaItem < areaItem.quantitaItemMassima) return areaItem;
+        }
+
+        return null;
+    }
+
+    /* Cosa che ho provato a fare ma devo andare a lavorare ora quindi mi sa che non raggiunge il gioco finale T.T
     private Dictionary<List<Interactable>, AsyncOperation> UpdateNavMeshStatus = new Dictionary<List<Interactable>, AsyncOperation>();
-    /*public Interactable FindNearest(List<Interactable> interactablesLiberi, NavMeshAgent agentDipendente)
+    public Interactable FindNearest(List<Interactable> interactablesLiberi, NavMeshAgent agentDipendente)
     {
 
         foreach(Interactable i in interactablesLiberi)
@@ -187,14 +202,41 @@ public class GameManager : MonoBehaviour
     #region Shift cycles
     IEnumerator ShiftCycle()
     {
-        shiftIsOver = true;
+        ShiftIsOver = true;
         while (true)
         {
             yield return new WaitForSeconds(durataTurno);
-            shiftIsOver = false;   
+            ShiftIsOver = false;   
             yield return new WaitForSeconds(durataPausa);
-            shiftIsOver = true;   
+            ShiftIsOver = true;   
         }
     }
+    #endregion
+
+    #region Buttons events
+    //TODO: Actions.
+    public void AddDipendente()
+    {
+        foreach (Dipendente d in Dipendenti)
+        {
+            if (!d.gameObject.activeSelf) { d.gameObject.SetActive(true); return; }
+        }
+    }
+
+    public void SwitchShiftStatus()
+    {
+        Debug.LogWarning("Turno: " + ShiftIsOver);
+        ShiftIsOver = !ShiftIsOver;
+    }
+
+    public void AddArea(InteractableType type)
+    {
+        foreach(Interactable i in oggettiInteragibili)
+        {
+            if(i.Type == type && !i.gameObject.activeSelf) { i.gameObject.SetActive(true); return; }
+        }
+    }
+
+
     #endregion
 }

@@ -11,7 +11,7 @@ public class C_Riposa : Nodo
     }
     public override Status Process()
     {
-        if(dipendente.staRiposando)
+        if(dipendente.StaRiposando)
             return Status.Success;
         else 
             return Status.Failure;

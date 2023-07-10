@@ -56,13 +56,16 @@ public class A_Interagisci : Nodo
         Status statoInterazione = dipendente.targetInteractable.Interact(actionToPerform);
 
         //Se il suo target interactable è ancora lo stesso significa che non ha ancora finito di interagire
-        if (!dipendente.interazioneFinita)
+        if (!dipendente.InterazioneFinita)
         {
             return Status.Running;
         }
         else
         {
-            dipendente.interazioneFinita = false;
+            dipendente.InterazioneFinita = false;
+
+            if (statoInterazione == Status.Running)
+                return Status.Success;
 
             return statoInterazione;
         }

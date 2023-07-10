@@ -10,7 +10,6 @@ using UnityEngine.UI;
 public enum Item { Niente, PopCorn, Bibita, Patatine, Scorta }
 public class Dipendente : MonoBehaviour
 {
-
     #region Tree IA
     //Tree behaviour
     Radice root = new();
@@ -19,38 +18,38 @@ public class Dipendente : MonoBehaviour
     Selettore mainSelector = new("Main selettore");
 
     //Il tipo di interactable con cui vuole interagire.
-    public InteractableType nextInteractableType;
+    [HideInInspector] public InteractableType nextInteractableType;
 
+
+    [Header("Componenti")]
+    public Slider sliderDipendente;
+
+    [Header("Debug, da non modificare")]
     //L'ultimo interagibile con cui è stato in contatto.
     public Interactable lastInteractable;
     //L'interactable del tipo InteractableType che questo dipendente sta cercando di raggiungere.
     public Interactable targetInteractable;
-
+    //Il cliente di cui si sta occupando.
+    public Cliente cliente;
     //L'oggetto che sta trasportando.
     public List<Item> carryingItem;
 
-    //Il cliente di cui si sta occupando.
-    public Cliente cliente;
 
     #region Bool di controllo
     //Si sta impegnando a rifornire una postazione?
-    public bool staRifornendo { get; set; }
+    public bool StaRifornendo { get; set; }
 
     //Ha finito di interagire con un'interagibile.
-    public bool interazioneFinita { get; set; }
+    public bool InterazioneFinita { get; set; }
 
     //Sta riposando?
-    public bool staRiposando { get; set; }
+    public bool StaRiposando { get; set; }
     #endregion
     #endregion
 
     #region NavMesh IA
     //L'agent del dipendete
     public NavMeshAgent agent { get; private set; }
-    #endregion
-
-    #region UI
-    public Slider sliderDipendente;
     #endregion
 
     // Start is called before the first frame update
@@ -88,6 +87,8 @@ public class Dipendente : MonoBehaviour
 
         C_ClientiDisponibili c_clientiDisponibili = new(this);
 
+        A_TrovaAreaLibera a_trovaClienteLibero = new(this, InteractableType.Cliente);
+
         A_MuovitiVersoInteractable a_muovitiVersoNuovoCliente = new(this);
 
         A_Interagisci a_prendeOrdinazione = new(this, InteractAction.PrendiOrdinazione);
@@ -114,7 +115,7 @@ public class Dipendente : MonoBehaviour
         /**************************************************/
 
         //Si mette Null perché non dobbiamo dirgli noi dove andare ma dovrà capirlo da solo!
-        A_TrovaStazioneLibera a_trovaAreaItem = new(this, InteractableType.Null);
+        A_TrovaAreaLibera a_trovaAreaItem = new(this, InteractableType.Null);
 
         /**************************************************/
 
@@ -139,7 +140,7 @@ public class Dipendente : MonoBehaviour
 
         /**************************************************/
 
-        A_TrovaStazioneLibera a_trovaScortaLibera = new(this, InteractableType.Scorta);
+        A_TrovaAreaLibera a_trovaScortaLibera = new(this, InteractableType.Scorta);
 
         A_MuovitiVersoInteractable a_muovitiVersoScorta = new(this);
 
@@ -206,6 +207,7 @@ public class Dipendente : MonoBehaviour
         /**************************************************/
 
         sequenzaSenzaCliente.AddChild(c_clientiDisponibili);
+        sequenzaSenzaCliente.AddChild(a_trovaClienteLibero);
         sequenzaSenzaCliente.AddChild(a_muovitiVersoNuovoCliente);
         sequenzaSenzaCliente.AddChild(a_prendeOrdinazione);
 
@@ -292,7 +294,7 @@ public class Dipendente : MonoBehaviour
             Selettore selettore001 = new Selettore("1");
             C_Riposa c_staRiposando = new C_Riposa(this);
             Sequenza sequenza0000 = new Sequenza("b");
-            A_TrovaStazioneLibera a_trovaStazioneRiposo = new(this, InteractableType.StazioneDiRiposo);
+            A_TrovaAreaLibera a_trovaStazioneRiposo = new(this, InteractableType.StazioneDiRiposo);
             A_MuovitiVersoInteractable a_muovitiVersoUscita = new A_MuovitiVersoInteractable(this);
             A_Interagisci a_riposa = new A_Interagisci(this, InteractAction.Riposa);
 
@@ -308,8 +310,8 @@ public class Dipendente : MonoBehaviour
         #endregion
 
         mainSelector.AddChild(selettorePrimaRamificazione);
-        mainSelector.AddChild(sequenzaSecondaRamificazione);
         mainSelector.AddChild(sequenzaTerzaRamificazione);
+        mainSelector.AddChild(sequenzaSecondaRamificazione);
         #endregion
 
     }
@@ -322,6 +324,8 @@ public class Dipendente : MonoBehaviour
 
     public Item NextItemInOrder()
     {
+        if (!cliente) return Item.Niente;
+
         List<Item> ordineAppoggio = new(cliente.order);
 
         foreach (Item itemPreparato in carryingItem)

@@ -23,7 +23,7 @@ public class Sequenza : Nodo
 
             case Status.Failure:
                 indexChild = 0;
-                Debug.LogError("SEQUENZA RESTITUISCE FAILURE: " + name);
+                Debug.Log("SEQUENZA RESTITUISCE FAILURE: " + name);
                 return Status.Failure;
 
 

@@ -11,7 +11,7 @@ public class C_TurnoFinito : Nodo
 
     public override Status Process()
     {
-        if (GameManager.current.shiftIsOver)
+        if (GameManager.current.ShiftIsOver)
         {
             return Status.Failure;
         }

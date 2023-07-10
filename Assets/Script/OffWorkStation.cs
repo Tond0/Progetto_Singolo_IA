@@ -4,11 +4,22 @@ using UnityEngine;
 
 public class OffWorkStation : Interactable
 {
-    protected override Status Azione0()
+    private void Awake()
     {
-        base.Azione0();
+        Type = InteractableType.StazioneDiRiposo;
 
-        dipendenteOnInteractable.staRiposando = true;
+        interazioniPossibili.Add(AzionePrimaria); 
+    }
+
+    //AzionePrimaria = dormire
+    protected Status AzionePrimaria()
+    {
+        //L'interazione è finita quindi la resettiamo in vista di un'interazione futura.
+        timerIsOver = false;
+        //L'interazione è finita quindi lo comunichiamo al dipendente.
+        dipendenteOnInteractable.InterazioneFinita = true;
+        //Il dipendente è sleepy sleepy
+        dipendenteOnInteractable.StaRiposando = true;
 
         return Status.Success;
     }

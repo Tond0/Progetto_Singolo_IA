@@ -4,12 +4,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class A_TrovaStazioneLibera : Nodo
+public class A_TrovaAreaLibera : Nodo
 {
     readonly Dipendente dipendente;
     readonly InteractableType interactableType;
     private Status NavMeshUpdateStatus;
-    public A_TrovaStazioneLibera(Dipendente dipendente, InteractableType interactableType) : base()
+    public A_TrovaAreaLibera(Dipendente dipendente, InteractableType interactableType) : base()
     {
         this.dipendente = dipendente;
         this.interactableType = interactableType;
@@ -31,7 +31,7 @@ public class A_TrovaStazioneLibera : Nodo
                 break;
 
             case InteractableType.Cliente:
-                
+
                 //Se deve muoversi verso un cliente ma ne ha già uno, allora si muoverà verso il suo cliente.
                 if (dipendente.cliente != null)
                     dipendente.targetInteractable = dipendente.cliente;
@@ -50,9 +50,13 @@ public class A_TrovaStazioneLibera : Nodo
 
         if (areeLibere.Count > 0)
         {
-            areeLibere[0].obstacle.enabled = false;
-            dipendente.targetInteractable = areeLibere[0];
-            return Status.Success;
+            if (areeLibere[0].dipendenteOnInteractable == dipendente || areeLibere[0].dipendenteOnInteractable == null)
+            {
+                areeLibere[0].obstacle.enabled = false;
+                dipendente.targetInteractable = areeLibere[0];
+                areeLibere[0].dipendenteOnInteractable = dipendente;
+                return Status.Success;
+            }
 
             //Cose che ho provato a fare ma non andavano...
             /*if (areeLibere.Count == 1)
@@ -75,11 +79,8 @@ public class A_TrovaStazioneLibera : Nodo
                 }
             }
             */
+
         }
-        else
-        {
-            //Attende che sia libero!
             return Status.Running;
-        }
     }
 }

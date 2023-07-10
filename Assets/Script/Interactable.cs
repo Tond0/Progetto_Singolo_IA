@@ -2,89 +2,47 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Timers;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum InteractableType { TecaPopCorn, Spina, TecaPatatine, Cliente, StazioneDiRiposo, Scorta, Null }
+public enum InteractableType { TecaPopCorn, Spina, TecaPatatine, [InspectorName(null)] Cliente, [InspectorName(null)] StazioneDiRiposo, [InspectorName(null)] Scorta, [InspectorName(null)] Null }
 public class Interactable : MonoBehaviour
 {
     [Header("Interactable stuff")]
-    public InteractableType type;
     public float durataInterazione;
-    public Dipendente dipendenteOnInteractable;
-    public int quantitaItemMassima;
-    public int quantitaItem;
-    [SerializeField] protected int quantitaDrop = 1;
     public NavMeshObstacle obstacle;
-    public bool ignore;
+    [Header("Per debug, da non modificare")]
+    public InteractableType Type; //Metto la possibilità di scegliere anche se in molti script poi forzo il suo Type per sicurezza.
+    public Dipendente dipendenteOnInteractable;
 
-    protected Item givenItem;
-    private void Start()
+    protected delegate Status Azione();
+    protected List<Azione> interazioniPossibili = new();
+    
+    #region Interact Manager
+    public Status Interact(int azione)
     {
-        if (type == InteractableType.TecaPopCorn || type == InteractableType.Scorta || type == InteractableType.Spina || type == InteractableType.TecaPatatine)
+        //Finito il tempo eseguiamo l'azione richiesta.
+        if (timerIsOver)
         {
-            givenItem = GameManager.current.InteractableTypeToItem(type);
+            return interazioniPossibili[azione]();
         }
 
-        //quantitaItem = quantitaItemMassima;
-    }
-
-    Coroutine waitCoroutine;
-    bool timerIsOver;
-    public Status Interact(int azione) 
-    {
-        //Ho dovuto utilizzare una variabile di appoggio (timeIsOver) perché se invokavo le azioni dalla coroutine poi per farle
-        //girare continuava a passare per la coroutine :( 
-
-        /*if (waitCoroutine == null)
-        {
-            switch (azione) 
-            {
-                case 0:
-                    waitCoroutine = StartCoroutine(WaitTime(Azione0));
-                    break;
-                case 1:
-                    waitCoroutine = StartCoroutine(WaitTime(Azione1));
-                    break;
-            }
-        }
-        */
-
+        //Facciamo passare il tempo d'interazione richiesto e facciamo muovere lo slider.
         if (waitCoroutine == null && !timerIsOver)
             waitCoroutine = StartCoroutine(WaitTime());
 
-        if (timerIsOver)
-        {
-            switch (azione)
-            {
-                case 0:
-                    return Azione0();
-                case 1:
-                    return Azione1();
-            }
-        }
 
         return Status.Running;
     }
+    #endregion
 
-
-    protected virtual Status Azione0() 
-    { 
-        timerIsOver = false;
-        dipendenteOnInteractable.interazioneFinita = true; 
-        /*Stato a caso sennò mi urla addosso */return Status.Running; 
-    }
-
-    protected virtual Status Azione1() 
-    { 
-        timerIsOver = false;
-        dipendenteOnInteractable.interazioneFinita = true;
-        /*Stato a caso sennò mi urla addosso */ return Status.Running;
-    }
-
-    float timer = 0;
-    IEnumerator WaitTime()
+    #region Timer
+    private float timer = 0;
+    protected bool timerIsOver = false;
+    protected Coroutine waitCoroutine;
+    protected IEnumerator WaitTime()
     {
         //SetUp slider
         dipendenteOnInteractable.sliderDipendente.maxValue = durataInterazione;
@@ -101,4 +59,5 @@ public class Interactable : MonoBehaviour
         timerIsOver = true;
         waitCoroutine = null;
     }
+    #endregion
 }
