@@ -154,7 +154,6 @@ public class GameManager : MonoBehaviour
     */
     #endregion
 
-
     #region Funzioni per traduzione tra enum
     public Item InteractableTypeToItem(InteractableType interactableType)
     {

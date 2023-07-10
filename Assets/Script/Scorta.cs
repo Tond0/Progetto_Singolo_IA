@@ -8,11 +8,14 @@ public class Scorta : Interactable
     [SerializeField] protected int quantitaDrop = 1;
     private Item givenItem;
 
-    private void Start()
+    private void Awake()
     {
         //Assegnazione tipologia
         Type = InteractableType.Scorta;
+    }
 
+    private void Start()
+    {
         //Assegnazione item.
         givenItem = GameManager.current.InteractableTypeToItem(Type);
 
