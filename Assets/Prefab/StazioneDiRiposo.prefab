@@ -111,14 +111,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e7248c078a904445b5ac97832dcab6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 4
   durataInterazione: 1
-  dipendenteOnInteractable: {fileID: 0}
-  quantitaItemMassima: 0
-  quantitaItem: 0
-  quantitaDrop: 0
   obstacle: {fileID: 486940643304409941}
-  ignore: 0
+  Type: 0
+  dipendenteOnInteractable: {fileID: 0}
 --- !u!208 &486940643304409941
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -129,7 +125,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_Extents: {x: 0.25, y: 0.25, z: 0.25}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1

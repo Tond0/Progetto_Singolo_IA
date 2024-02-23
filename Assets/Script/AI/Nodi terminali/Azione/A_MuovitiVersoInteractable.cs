@@ -12,10 +12,10 @@ public class A_MuovitiVersoInteractable : Nodo
         this.dipendente = dipendente;
     }
 
-    //Quando è arrivato a destinazione...
+    //Quando ï¿½ arrivato a destinazione...
     public bool arrivato;
 
-    //Se la destinazione viene decisa allora non c'è bisogno di trovarne un'altra
+    //Se la destinazione viene decisa allora non c'ï¿½ bisogno di trovarne un'altra
     private bool destinationDecided;
     public override Status Process()
     {
@@ -32,10 +32,10 @@ public class A_MuovitiVersoInteractable : Nodo
         }
         #endregion
 
-
-        #region Controllo se è arrivato o meno
-        //Se l'ultimo interactable con cui è stato a contatto è il suo obbiettivo allora significa che è già arrivato a destinazione!
-        if (dipendente.lastInteractable == dipendente.targetInteractable)
+        float sqrDistance = (dipendente.transform.position - dipendente.targetInteractable.transform.position).sqrMagnitude;
+        #region Controllo se ï¿½ arrivato o meno
+        //Se l'ultimo interactable con cui ï¿½ stato a contatto ï¿½ il suo obbiettivo allora significa che ï¿½ giï¿½ arrivato a destinazione!
+        if (sqrDistance <= 4)
         {
             //Reset.
             destinationDecided = false;

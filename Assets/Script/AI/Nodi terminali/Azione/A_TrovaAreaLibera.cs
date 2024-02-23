@@ -32,7 +32,7 @@ public class A_TrovaAreaLibera : Nodo
 
             case InteractableType.Cliente:
 
-                //Se deve muoversi verso un cliente ma ne ha già uno, allora si muoverà verso il suo cliente.
+                //Se deve muoversi verso un cliente ma ne ha giï¿½ uno, allora si muoverï¿½ verso il suo cliente.
                 if (dipendente.cliente != null)
                     dipendente.targetInteractable = dipendente.cliente;
                 else
@@ -52,7 +52,6 @@ public class A_TrovaAreaLibera : Nodo
         {
             if (areeLibere[0].dipendenteOnInteractable == dipendente || areeLibere[0].dipendenteOnInteractable == null)
             {
-                areeLibere[0].obstacle.enabled = false;
                 dipendente.targetInteractable = areeLibere[0];
                 areeLibere[0].dipendenteOnInteractable = dipendente;
                 return Status.Success;

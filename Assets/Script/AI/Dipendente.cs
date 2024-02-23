@@ -25,7 +25,7 @@ public class Dipendente : MonoBehaviour
     public Slider sliderDipendente;
 
     [Header("Debug, da non modificare")]
-    //L'ultimo interagibile con cui è stato in contatto.
+    //L'ultimo interagibile con cui ï¿½ stato in contatto.
     public Interactable lastInteractable;
     //L'interactable del tipo InteractableType che questo dipendente sta cercando di raggiungere.
     public Interactable targetInteractable;
@@ -73,13 +73,13 @@ public class Dipendente : MonoBehaviour
 
         /**************************************************/
 
-        Sequenza sequenzaConCliente = new("Sequenza che si chiede se sta già servendo un cliente");
+        Sequenza sequenzaConCliente = new("Sequenza che si chiede se sta giï¿½ servendo un cliente");
         
         Sequenza sequenzaSenzaCliente = new("Sequenza che si chiede se ci sono nuovi clienti");
 
         /**************************************************/
 
-        Selettore selettoreStatoOrdine = new("Selettore che si chiede a che stato è l'ordine");
+        Selettore selettoreStatoOrdine = new("Selettore che si chiede a che stato ï¿½ l'ordine");
 
         C_ServendoUnCliente c_servendoUnCliente = new(this);
 
@@ -102,7 +102,7 @@ public class Dipendente : MonoBehaviour
 
         /**************************************************/
 
-        Sequenza sequenzaOrdineConcluso = new("Selettore che si chiede se è finito l'ordine");
+        Sequenza sequenzaOrdineConcluso = new("Selettore che si chiede se ï¿½ finito l'ordine");
 
         Sequenza sequenzaConsegnaOrdine = new("Sequenza per la consegna dell'ordine");
 
@@ -114,7 +114,7 @@ public class Dipendente : MonoBehaviour
 
         /**************************************************/
 
-        //Si mette Null perché non dobbiamo dirgli noi dove andare ma dovrà capirlo da solo!
+        //Si mette Null perchï¿½ non dobbiamo dirgli noi dove andare ma dovrï¿½ capirlo da solo!
         A_TrovaAreaLibera a_trovaAreaItem = new(this, InteractableType.Null);
 
         /**************************************************/
@@ -259,7 +259,7 @@ public class Dipendente : MonoBehaviour
 
         Sequenza sequenzaSecondaRamificazione = new("Sequenza che si chiede se le postazioni sono riempibili");
 
-        Selettore selettorePossessoScorta = new("Selettore che si chiede se è in possesso di una scorta");
+        Selettore selettorePossessoScorta = new("Selettore che si chiede se ï¿½ in possesso di una scorta");
 
         Sequenza sequenzaCherRifornisce = new("Sequenza per il rifornimento di una stazione vuota");
         
@@ -319,7 +319,7 @@ public class Dipendente : MonoBehaviour
     private void Update()
     {
         root.Process();
-        Debug.LogWarning("Il main selettore sta analizzando il nodo: " + mainSelector.indexChild);
+        //Debug.LogWarning("Il main selettore sta analizzando il nodo: " + mainSelector.indexChild);
     }
 
     public Item NextItemInOrder()
@@ -344,7 +344,7 @@ public class Dipendente : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Se è a contatto con un interagibile e questo interagibile è ciò che voleva raggiungere allora è arrivato a destinazione!
+        //Se ï¿½ a contatto con un interagibile e questo interagibile ï¿½ ciï¿½ che voleva raggiungere allora ï¿½ arrivato a destinazione!
         if(collision.transform.TryGetComponent(out Interactable interactable) && interactable == targetInteractable)
         {
             lastInteractable = interactable;

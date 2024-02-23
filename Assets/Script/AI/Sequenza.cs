@@ -12,7 +12,7 @@ public class Sequenza : Nodo
     {
         if(base.Process() == Status.Failure) return Status.Failure;
 
-        Debug.Log("Running " + name + " on: " + children[indexChild]);
+        //Debug.Log("Running " + name + " on: " + children[indexChild]);
 
         switch (children[indexChild].Process())
         {
@@ -21,7 +21,7 @@ public class Sequenza : Nodo
 
             case Status.Failure:
                 indexChild = 0;
-                Debug.Log("SEQUENZA RESTITUISCE FAILURE: " + name);
+                //Debug.Log("SEQUENZA RESTITUISCE FAILURE: " + name);
                 return Status.Failure;
 
 

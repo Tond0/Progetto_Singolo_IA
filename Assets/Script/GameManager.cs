@@ -73,7 +73,6 @@ public class GameManager : MonoBehaviour
             {
                 interactablesLiberi.Clear();
                 interactablesLiberi.Add(i);
-                i.obstacle.enabled = false;
                 return interactablesLiberi;
             }
         }
