@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public static GameManager current;
     private void Awake()
     {
-        if(current != null) Destroy(this);
+        if (current != null) Destroy(this);
         else current = this;
     }
     #endregion
@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     public NavMeshSurface surface;
     public List<Interactable> oggettiInteragibili = new();
     public List<Dipendente> Dipendenti = new();
-    
+
 
     private void OnValidate()
     {
@@ -47,17 +47,17 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        foreach(Interactable i in oggettiInteragibili)
+        foreach (Interactable i in oggettiInteragibili)
         {
-            if(i.Type != InteractableType.Scorta) i.gameObject.SetActive(false);
+            if (i.Type != InteractableType.Scorta) i.gameObject.SetActive(false);
         }
 
-        //Shift cycle setUp (funzionava ma per creare una scena di test più carina voglio far decidere al tester quando finire il turno)
+        //Shift cycle setUp (funzionava ma per creare una scena di test piï¿½ carina voglio far decidere al tester quando finire il turno)
         //StartCoroutine(ShiftCycle());
     }
 
 
-    #region Trovare il percorso all'interactable più vicino
+    #region Trovare il percorso all'interactable piï¿½ vicino
     public List<Interactable> GetFreeInteractables(InteractableType typeNeeded, Dipendente dipendente)
     {
         List<Interactable> interactablesLiberi = new();
@@ -83,9 +83,9 @@ public class GameManager : MonoBehaviour
 
     public AreaItem GetFreeAreaItemRifornibile(Dipendente dipendente)
     {
-        foreach(Interactable i in oggettiInteragibili)
+        foreach (Interactable i in oggettiInteragibili)
         {
-            //Se l'interactable è un'area item, che non sta venendo utilizzata, che non è maxxata...
+            //Se l'interactable ï¿½ un'area item, che non sta venendo utilizzata, che non ï¿½ maxxata...
             if (i.TryGetComponent(out AreaItem areaItem) && (!areaItem.dipendenteOnInteractable || areaItem.dipendenteOnInteractable == dipendente) && areaItem.quantitaItem < areaItem.quantitaItemMassima) return areaItem;
         }
 
@@ -168,7 +168,7 @@ public class GameManager : MonoBehaviour
             case InteractableType.TecaPatatine:
                 return Item.Patatine;
 
-            case InteractableType.Scorta: 
+            case InteractableType.Scorta:
                 return Item.Scorta;
         }
 
@@ -205,9 +205,9 @@ public class GameManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(durataTurno);
-            ShiftIsOver = false;   
+            ShiftIsOver = false;
             yield return new WaitForSeconds(durataPausa);
-            ShiftIsOver = true;   
+            ShiftIsOver = true;
         }
     }
     #endregion
@@ -218,7 +218,12 @@ public class GameManager : MonoBehaviour
     {
         foreach (Dipendente d in Dipendenti)
         {
-            if (!d.gameObject.activeSelf) { d.gameObject.SetActive(true); return; }
+            if (!d.gameObject.activeSelf)
+            {
+                d.gameObject.SetActive(true);
+                AddArea(InteractableType.StazioneDiRiposo);
+                return;
+            }
         }
     }
 
@@ -230,9 +235,9 @@ public class GameManager : MonoBehaviour
 
     public void AddArea(InteractableType type)
     {
-        foreach(Interactable i in oggettiInteragibili)
+        foreach (Interactable i in oggettiInteragibili)
         {
-            if(i.Type == type && !i.gameObject.activeSelf) { i.gameObject.SetActive(true); return; }
+            if (i.Type == type && !i.gameObject.activeSelf) { i.gameObject.SetActive(true); return; }
         }
     }
 
